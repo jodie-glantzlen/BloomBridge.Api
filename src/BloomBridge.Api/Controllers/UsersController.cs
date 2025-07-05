@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Mvc;
 using BloomBridge.Api.Models;
 using BloomBridge.Api.DTOs;
 using BloomBridge.Api.Data;
+using Microsoft.EntityFrameworkCore;
 
 namespace BloomBridge.Api.Controllers;
 
@@ -43,5 +44,12 @@ public class UsersController : ControllerBase
 		if (user == null) return NotFound();
 
 		return Ok(user);
+	}
+
+	[HttpGet]
+	public async Task<ActionResult<IEnumerable<User>>> GetUsers()
+	{
+		var users = await _db.Users.ToListAsync();
+		return Ok(users);
 	}
 }
