@@ -24,7 +24,7 @@ public class MatchController : ControllerBase
 	// Fetch all therapists
 	// Use the ITherapistMatcherService to find the best match
 	// Return MatchResult
-
+	// triggered by a user action like clicking "Find Therapist" (FE)
 
 // GET /matches
 	// View all matches.

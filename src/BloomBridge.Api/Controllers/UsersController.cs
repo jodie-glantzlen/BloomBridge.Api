@@ -1,13 +1,47 @@
-// POST /users
-	//Create a new user
+using Microsoft.AspNetCore.Mvc;
+using BloomBridge.Api.Models;
+using BloomBridge.Api.DTOs;
+using BloomBridge.Api.Data;
 
+namespace BloomBridge.Api.Controllers;
 
-// POST /api/users/{userId}/needs
-	// payload: {"needIds": [1, 2, 3]}
-	// Fetch the valid PredefinedNeeds
-	// Create UserPredefinedNeed entries
-	// Optionally return a success message or the updated user info
+[ApiController]
+[Route("api/[controller]")]
+public class UsersController : ControllerBase
+{
+	private readonly AppDbContext _db;
 
-// Maybe?
-// GET /users/{id}
-	// View user details including selected needs.
+	public UsersController(AppDbContext db)
+	{
+		_db = db;
+	}
+
+	[HttpPost]
+	public async Task<ActionResult<User>> CreateUser([FromBody] CreateUserDto dto)
+	{
+
+		if (!ModelState.IsValid)
+		{
+			return BadRequest(ModelState);
+		}
+
+		var user = new User
+		{
+			Name = dto.Name
+		};
+
+		_db.Users.Add(user);
+		await _db.SaveChangesAsync();
+
+		return CreatedAtAction(nameof(GetUser), new { id = user.Id }, user);
+	}
+
+	[HttpGet("{id}")]
+	public async Task<ActionResult<User>> GetUser(int id)
+	{
+		var user = await _db.Users.FindAsync(id);
+		if (user == null) return NotFound();
+
+		return Ok(user);
+	}
+}
