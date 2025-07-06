@@ -34,22 +34,58 @@ public class UsersController : ControllerBase
 		_db.Users.Add(user);
 		await _db.SaveChangesAsync();
 
+		// Convert to response DTO
+		var userResponse = new UserResponseDto
+		{
+			Id = user.Id,
+			Name = user.Name
+			// UserPredefinedNeeds and UserCustomNeeds will be empty lists (because new user)
+		};
+
 		return CreatedAtAction(nameof(GetUser), new { id = user.Id }, user);
 	}
 
 	[HttpGet("{id}")]
-	public async Task<ActionResult<User>> GetUser(int id)
+	public async Task<ActionResult<UserResponseDto>> GetUser(int id)
 	{
-		var user = await _db.Users.FindAsync(id);
+		var user = await _db.Users
+			.Include(u => u.UserPredefinedNeeds)
+				.ThenInclude(upn => upn.PredefinedNeed)
+			.FirstOrDefaultAsync(u => u.Id == id);
+
 		if (user == null) return NotFound();
 
-		return Ok(user);
+		// Convert to response DTO
+		var userResponse = MapToUserResponseDto(user);
+		return Ok(userResponse);
 	}
 
 	[HttpGet]
-	public async Task<ActionResult<IEnumerable<User>>> GetUsers()
+	public async Task<ActionResult<IEnumerable<UserResponseDto>>> GetUsers()
 	{
-		var users = await _db.Users.ToListAsync();
-		return Ok(users);
+		var users = await _db.Users
+			.Include(u => u.UserPredefinedNeeds)
+				.ThenInclude(upn => upn.PredefinedNeed)
+			.ToListAsync();
+
+		// Convert each user to response DTO
+		var userResponses = users.Select(MapToUserResponseDto).ToList();
+		return Ok(userResponses);
+	}
+
+	private UserResponseDto MapToUserResponseDto(User user)
+	{
+		return new UserResponseDto
+		{
+			Id = user.Id,
+			Name = user.Name,
+			PredefinedNeeds = user.UserPredefinedNeeds.Select(upn => new PredefinedNeedResponseDto
+			{
+				Id = upn.Id,
+				Label = upn.PredefinedNeed.Label
+			}).ToList(),
+
+			// UserCustomNeeds will be empty for now, as we haven't implemented custom needs yet
+		};
 	}
 }

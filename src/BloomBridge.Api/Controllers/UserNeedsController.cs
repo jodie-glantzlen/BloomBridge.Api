@@ -14,7 +14,7 @@ using BloomBridge.Api.Data;
 using Microsoft.EntityFrameworkCore;
 
 [ApiController]
-[Route("api/users/{userId}/needs")]
+[Route("api/users/{userId}/predefinedneeds")]
 public class UserNeedsController : ControllerBase
 {
 	private readonly AppDbContext _db;
@@ -23,7 +23,7 @@ public class UserNeedsController : ControllerBase
 		_db = db;
 	}
 	[HttpPost]
-	public async Task<ActionResult> AddUserNeeds(int userId, [FromBody] AddUserNeedsDto dto)
+	public async Task<ActionResult> AddUserNeeds(int userId, [FromBody] AddUserPredefinedNeedsDto dto)
 	{
 		if (!ModelState.IsValid)
 		{
@@ -37,10 +37,10 @@ public class UserNeedsController : ControllerBase
 		}
 
 		var needs = await _db.PredefinedNeeds
-			.Where(n => dto.NeedIds.Contains(n.Id))
+			.Where(n => dto.PredefinedNeedIds.Contains(n.Id))
 			.ToListAsync();
 
-		if (needs.Count != dto.NeedIds.Count)
+		if (needs.Count != dto.PredefinedNeedIds.Count)
 		{
 			return BadRequest("Some of the provided need IDs are invalid.");
 		}

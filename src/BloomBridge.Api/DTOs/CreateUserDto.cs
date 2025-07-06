@@ -1,4 +1,7 @@
+// INPUT DTO (Client -> API)
+
 namespace BloomBridge.Api.DTOs;
+
 using System.ComponentModel.DataAnnotations;
 
 public class CreateUserDto

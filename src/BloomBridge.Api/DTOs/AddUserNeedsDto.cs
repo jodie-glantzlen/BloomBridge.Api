@@ -1,10 +1,12 @@
+// INPUT DTO (Client -> API)
+
 namespace BloomBridge.Api.DTOs;
 
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
-public class AddUserNeedsDto
+public class AddUserPredefinedNeedsDto
 {
 	[Required]
-	public List<int> NeedIds { get; set; } = new List<int>();
+	public List<int> PredefinedNeedIds { get; set; } = new List<int>();
 }
