@@ -24,29 +24,8 @@ public class TherapistMatcherServiceTests
 		// ARRANGE
 		var therapists = new List<Therapist>
 		{
-				new Therapist
-				{
-						Id = 1,
-						Name = "Albus",
-						Expertise = new List<PredefinedNeed>
-						{
-								new PredefinedNeed
-								{
-										Id = 5,
-										Label = "Something else"
-								}
-						},
-						Capacity = 3,
-						CurrentClients = 1
-				},
-				new Therapist
-				{
-						Id = 2,
-						Name = "Severus",
-						Expertise = new List<PredefinedNeed> { TestValues.Need2 }, // Reuse predefined need
-            Capacity = 2,
-						CurrentClients = 2
-				}
+			TestValues.Therapists[0], // no match
+			TestValues.Therapists[1], // perfect match but full capacity
 		};
 
 		var service = new TherapistMatcherService();
@@ -65,7 +44,7 @@ public class TherapistMatcherServiceTests
 		public static readonly PredefinedNeed Need1 = new PredefinedNeed { Id = 1, Label = "Anxiety" };
 		public static readonly PredefinedNeed Need2 = new PredefinedNeed { Id = 2, Label = "Grief" };
 		public static readonly PredefinedNeed Need3 = new PredefinedNeed { Id = 3, Label = "Nutrition" };
-
+		public static readonly PredefinedNeed Need4 = new PredefinedNeed { Id = 4, Label = "Anger" };
 		public static readonly User User;
 		public static readonly List<Therapist> Therapists;
 
@@ -97,29 +76,95 @@ public class TherapistMatcherServiceTests
 
 			Therapists = new List<Therapist>
 				{
+						// no match
 						new Therapist
 						{
 								Id = 1,
 								Name = "Albus",
-								Expertise = new List<PredefinedNeed> { Need1, Need3 },
+								Fields = new List<TherapistField>
+								{
+										new TherapistField
+										{
+												Id = 1,
+												TherapistId = 1,
+												PredefinedNeedId = Need3.Id,
+												PredefinedNeed = Need3
+										},
+								},
 								Capacity = 3,
 								CurrentClients = 1
 						},
+						// full match but full capacity
 						new Therapist
 						{
 								Id = 2,
 								Name = "Severus",
-								Expertise = new List<PredefinedNeed> { Need2 },
+								Fields = new List<TherapistField> {
+									new TherapistField
+										{
+												Id = 2,
+												TherapistId = 2,
+												PredefinedNeedId = Need1.Id,
+												PredefinedNeed = Need1
+										},
+										new TherapistField
+										{
+												Id = 3,
+												TherapistId = 2,
+												PredefinedNeedId = Need2.Id,
+												PredefinedNeed = Need2
+										}
+								},
 								Capacity = 2,
 								CurrentClients = 2
 						},
+						// full match with capacity
 						new Therapist
 						{
 								Id = 3,
 								Name = "Rubeus",
-								Expertise = new List<PredefinedNeed> { Need1, Need2 },
+								Fields = new List<TherapistField> {
+										new TherapistField
+										{
+												Id = 4,
+												TherapistId = 3,
+												PredefinedNeedId = Need1.Id,
+												PredefinedNeed = Need1
+										},
+										new TherapistField
+										{
+												Id = 5,
+												TherapistId = 3,
+												PredefinedNeedId = Need2.Id,
+												PredefinedNeed = Need2
+										}
+								},
 								Capacity = 2,
 								CurrentClients = 0
+						},
+						// partial match with capacity
+						new Therapist
+						{
+								Id = 4,
+								Name = "Minerva",
+								Fields = new List<TherapistField> {
+										new TherapistField
+										{
+												Id = 6,
+												TherapistId = 4,
+												PredefinedNeedId = Need2.Id,
+												PredefinedNeed = Need2
+										},
+										new TherapistField
+										{
+												Id = 7,
+												TherapistId = 4,
+												PredefinedNeedId = Need4.Id,
+												PredefinedNeed = Need4
+										}
+								},
+								Capacity = 3,
+								CurrentClients = 1
 						}
 				};
 		}

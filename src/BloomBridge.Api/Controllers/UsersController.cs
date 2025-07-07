@@ -31,7 +31,6 @@ public class UsersController : ControllerBase
 		{
 			Name = dto.Name
 		};
-
 		_db.Users.Add(user);
 		await _db.SaveChangesAsync();
 
@@ -59,5 +58,9 @@ public class UsersController : ControllerBase
 			.ToListAsync();
 		return Ok(users.ToUserResponseDtos());
 	}
-
 }
+
+// TODO
+// add validation for user creation (e.g., unique names, required fields)
+// implement user update and delete endpoints 
+// add try/catch error handling

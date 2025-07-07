@@ -20,11 +20,12 @@ public class TherapistMatcherService : ITherapistMatcherService
 			int currentMatchScore = 0;
 
 			// iterate over the user's needs
-			// count how many are in the current therapist's expertise 
+			// count how many are in the current therapist's fields of expertise
 			foreach (var need in user.UserPredefinedNeeds)
 			{
-				if (therapist.Expertise.Any(e => e.Id == need.PredefinedNeed.Id))
+				if (therapist.Fields.Any(field => field.PredefinedNeedId == need.PredefinedNeedId))
 				{
+					// if the therapist has expertise in this need, increment score
 					currentMatchScore++;
 				}
 			}

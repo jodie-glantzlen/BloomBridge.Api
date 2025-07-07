@@ -9,3 +9,7 @@ public class User
 	public List<UserPredefinedNeed> UserPredefinedNeeds { get; set; } = new();
 	public List<UserCustomNeed> UserCustomNeeds { get; set; } = new();
 }
+
+// TODO
+	// add email, password, and other user properties to make them unique
+	// in a galaxy far far away: implement user roles (user or therapist)
