@@ -35,7 +35,7 @@ public class UsersController : ControllerBase
 		_db.Users.Add(user);
 		await _db.SaveChangesAsync();
 
-		return CreatedAtAction(nameof(GetUser), new { id = user.Id }, user.ToUserResponseDto());
+		return CreatedAtAction(nameof(GetUser), new { id = user.Id }, user.ToUserResponseDto()); // HTTP 201 Created
 	}
 
 	[HttpGet("{id}")]
@@ -47,8 +47,6 @@ public class UsersController : ControllerBase
 			.FirstOrDefaultAsync(u => u.Id == id);
 
 		if (user == null) return NotFound();
-
-		// Convert to response DTO
 		return Ok(user.ToUserResponseDto());
 	}
 
@@ -59,8 +57,6 @@ public class UsersController : ControllerBase
 			.Include(u => u.UserPredefinedNeeds)
 				.ThenInclude(upn => upn.PredefinedNeed)
 			.ToListAsync();
-
-		// Convert each user to response DTO
 		return Ok(users.ToUserResponseDtos());
 	}
 

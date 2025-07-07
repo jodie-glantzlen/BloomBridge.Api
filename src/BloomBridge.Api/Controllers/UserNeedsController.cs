@@ -62,3 +62,7 @@ public class UserNeedsController : ControllerBase
 		return Ok(new { Message = "User needs added successfully." });
 	}
 }
+
+// TODO
+// - add validation for duplicate needs
+// - returning the updated user info or a summary of added needs
