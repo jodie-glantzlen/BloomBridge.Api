@@ -1,7 +1,10 @@
 using BloomBridge.Api.Data;
 using BloomBridge.Api.Models;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
+[ApiController]
+[Route("api/[controller]")]
 public class MatchController : ControllerBase
 {
 	private readonly ITherapistMatcherService _therapistMatcherService;
@@ -13,17 +16,36 @@ public class MatchController : ControllerBase
 		_db = db;
 	}
 
-	// do something weeee
+	[HttpPost]
+	public async Task<ActionResult<MatchResult>> MatchUserToTherapist([FromBody] MatchRequestDto request)
+	{
+		// Get user with their needs
+		var user = await _db.Users
+			.Include(u => u.UserPredefinedNeeds)
+				.ThenInclude(upn => upn.PredefinedNeed)
+			.FirstOrDefaultAsync(u => u.Id == request.UserId);
 
-};
+		if (user == null)
+		{
+			return NotFound($"User with ID {request.UserId} not found.");
+		}
 
-// POST /api/match
-	// Match a user to a therapist based on their needs
-	// payload: {"userId": 1}
-	// Fetch the user and their needs
-	// Fetch all therapists
-	// Use the ITherapistMatcherService to find the best match
-	// Return MatchResult
+		// Get all therapists with their fields
+		var therapists = await _db.Therapists
+			.Include(t => t.Fields)
+				.ThenInclude(tf => tf.PredefinedNeed)
+			.ToListAsync();
+
+		if (therapists.Count == 0)
+		{
+			return NotFound("Error fetching therapists");
+		}
+
+		// Use the matcher service to find the best match
+		var matchResult = _therapistMatcherService.MatchUserToTherapist(user, therapists);
+		return Ok(matchResult);
+	}
+}
 	// triggered by a user action like clicking "Find Therapist" (FE)
 
 // GET /matches

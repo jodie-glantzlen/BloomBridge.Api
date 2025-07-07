@@ -50,10 +50,14 @@ public class TherapistMatcherService : ITherapistMatcherService
 		
 		return new MatchResult
 		{
-			Therapist = bestMatch,
+			Therapist = new TherapistResponseDto
+			{
+				Id = bestMatch.Id,
+				Name = bestMatch.Name,
+				Expertise = bestMatch.Fields.Select(f => f.PredefinedNeed.Label).ToList()
+			},
 			Score = bestMatchScore,
 			Message = "Match found"
 		};
-
 	}
 }
