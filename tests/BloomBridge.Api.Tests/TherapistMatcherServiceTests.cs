@@ -39,6 +39,24 @@ public class TherapistMatcherServiceTests
 		Assert.Equal("No therapist available", result.Message);
 	}
 
+	private static Therapist CreateTherapist(int id, string name, int capacity, int currentClients, params PredefinedNeed[] needs)
+	{
+		return new Therapist
+		{
+			Id = id,
+			Name = name,
+			Capacity = capacity,
+			CurrentClients = currentClients,
+			Fields = needs.Select((need, index) => new TherapistField
+			{
+				Id = 100 + id * 10 + index,
+				TherapistId = id,
+				PredefinedNeedId = need.Id,
+				PredefinedNeed = need
+			}).ToList()
+		};
+	}
+
 	public static class TestValues
 	{
 		public static readonly PredefinedNeed Need1 = new PredefinedNeed { Id = 1, Label = "Anxiety" };
@@ -75,98 +93,12 @@ public class TherapistMatcherServiceTests
 				});
 
 			Therapists = new List<Therapist>
-				{
-						// no match
-						new Therapist
-						{
-								Id = 1,
-								Name = "Albus",
-								Fields = new List<TherapistField>
-								{
-										new TherapistField
-										{
-												Id = 1,
-												TherapistId = 1,
-												PredefinedNeedId = Need3.Id,
-												PredefinedNeed = Need3
-										},
-								},
-								Capacity = 3,
-								CurrentClients = 1
-						},
-						// full match but full capacity
-						new Therapist
-						{
-								Id = 2,
-								Name = "Severus",
-								Fields = new List<TherapistField> {
-									new TherapistField
-										{
-												Id = 2,
-												TherapistId = 2,
-												PredefinedNeedId = Need1.Id,
-												PredefinedNeed = Need1
-										},
-										new TherapistField
-										{
-												Id = 3,
-												TherapistId = 2,
-												PredefinedNeedId = Need2.Id,
-												PredefinedNeed = Need2
-										}
-								},
-								Capacity = 2,
-								CurrentClients = 2
-						},
-						// full match with capacity
-						new Therapist
-						{
-								Id = 3,
-								Name = "Rubeus",
-								Fields = new List<TherapistField> {
-										new TherapistField
-										{
-												Id = 4,
-												TherapistId = 3,
-												PredefinedNeedId = Need1.Id,
-												PredefinedNeed = Need1
-										},
-										new TherapistField
-										{
-												Id = 5,
-												TherapistId = 3,
-												PredefinedNeedId = Need2.Id,
-												PredefinedNeed = Need2
-										}
-								},
-								Capacity = 2,
-								CurrentClients = 0
-						},
-						// partial match with capacity
-						new Therapist
-						{
-								Id = 4,
-								Name = "Minerva",
-								Fields = new List<TherapistField> {
-										new TherapistField
-										{
-												Id = 6,
-												TherapistId = 4,
-												PredefinedNeedId = Need2.Id,
-												PredefinedNeed = Need2
-										},
-										new TherapistField
-										{
-												Id = 7,
-												TherapistId = 4,
-												PredefinedNeedId = Need4.Id,
-												PredefinedNeed = Need4
-										}
-								},
-								Capacity = 3,
-								CurrentClients = 1
-						}
-				};
+			{
+				CreateTherapist(1, "Albus", 3, 1, Need3), // no match
+				CreateTherapist(2, "Severus", 2, 2, Need1, Need2), // full match but full capacity
+				CreateTherapist(3, "Rubeus", 2, 0, Need1, Need2), // full match with capacity
+				CreateTherapist(4, "Minerva", 3, 1, Need2, Need4) // partial match with capacity
+			};
 		}
 	}
 }
