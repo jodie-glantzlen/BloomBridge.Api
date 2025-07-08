@@ -48,9 +48,12 @@ public class MatchController : ControllerBase
 }
 	// triggered by a user action like clicking "Find Therapist" (FE)
 
-// GET /matches
-	// View all matches.
 
-// GET /matches/ unmatched
-	//(Optional) See users who couldn’t be matched
+// TODO
+// GET /matches
+	// View all matches
+
+// GET /matches/unmatched
+	//See users who couldn’t be matched
+	// implement waiting list system
 

@@ -47,7 +47,7 @@ public class TherapistMatcherService : ITherapistMatcherService
 				Message = "No therapist available"
 			};
 		}
-		
+
 		return new MatchResult
 		{
 			Therapist = new TherapistResponseDto
@@ -61,3 +61,6 @@ public class TherapistMatcherService : ITherapistMatcherService
 		};
 	}
 }
+
+// TODO:
+	// tie logic - if multiple therapists have the same score, return all of them
