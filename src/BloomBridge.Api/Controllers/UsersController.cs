@@ -13,9 +13,9 @@ public class UsersController : ControllerBase
 {
 	private readonly AppDbContext _db;
 
-	public UsersController(AppDbContext db)
-	{
-		_db = db;
+  public UsersController(AppDbContext db)
+  {
+    _db = db;
 	}
 
 	[HttpPost]

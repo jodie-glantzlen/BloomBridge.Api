@@ -17,49 +17,48 @@ using Microsoft.EntityFrameworkCore;
 [Route("api/users/{userId}/predefinedneeds")]
 public class UserNeedsController : ControllerBase
 {
-	private readonly AppDbContext _db;
-	public UserNeedsController(AppDbContext db)
-	{
-		_db = db;
-	}
-	[HttpPost]
-	public async Task<ActionResult> AddUserNeeds(int userId, [FromBody] AddUserPredefinedNeedsDto dto)
-	{
-		if (!ModelState.IsValid)
-		{
-			return BadRequest(ModelState);
-		}
+  private readonly AppDbContext _db;
+  public UserNeedsController(AppDbContext db)
+  {
+    _db = db;
+  }
+  [HttpPost]
+  public async Task<ActionResult> AddUserNeeds(int userId, [FromBody] AddUserPredefinedNeedsDto dto)
+  {
+    if (!ModelState.IsValid)
+    {
+      return BadRequest(ModelState);
+    }
 
-		var user = await _db.Users.FindAsync(userId);
-		if (user == null)
-		{
-			return NotFound($"User with ID {userId} not found.");
-		}
+    var user = await _db.Users.FindAsync(userId);
+    if (user == null)
+    {
+      return NotFound($"User with ID {userId} not found.");
+    }
 
-		var needs = await _db.PredefinedNeeds
-			.Where(n => dto.PredefinedNeedIds.Contains(n.Id))
-			.ToListAsync();
+    var needs = await _db.PredefinedNeeds
+      .Where(n => dto.PredefinedNeedIds.Contains(n.Id))
+      .ToListAsync();
 
-		if (needs.Count != dto.PredefinedNeedIds.Count)
-		{
-			return BadRequest("Some of the provided need IDs are invalid.");
-		}
+    if (needs.Count != dto.PredefinedNeedIds.Count)
+    {
+      return BadRequest("Some of the provided need IDs are invalid.");
+    }
 
-		foreach (var need in needs)
-		{
-			var userNeed = new UserPredefinedNeed
-			{
-				UserId = userId,
-				PredefinedNeedId = need.Id,
-				User = user,
-				PredefinedNeed = need
-			};
-			await _db.UserPredefinedNeeds.AddAsync(userNeed);
-		}
-		await _db.SaveChangesAsync();
-		return Ok(new { Message = "User needs added successfully." });
-
-	}
+    foreach (var need in needs)
+    {
+      var userNeed = new UserPredefinedNeed
+      {
+        UserId = userId,
+        PredefinedNeedId = need.Id,
+        User = user,
+        PredefinedNeed = need
+      };
+      await _db.UserPredefinedNeeds.AddAsync(userNeed);
+    }
+    await _db.SaveChangesAsync();
+    return Ok(new { Message = "User needs added successfully." });
+  }
 }
 
 // TODO
