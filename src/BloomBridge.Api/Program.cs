@@ -7,19 +7,19 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddOpenApi();
 builder.Services.AddControllers();
 builder.Services.AddDbContext<AppDbContext>(options =>
-		options.UseSqlite("Data Source=BloomBridge.db"));
+        options.UseSqlite("Data Source=BloomBridge.db"));
 builder.Services.AddScoped<ITherapistMatcherService, TherapistMatcherService>();
 
 // Add CORS policy
 var allowedOrigins = new[] { "http://localhost:8081" };
 builder.Services.AddCors(options =>
 {
-	options.AddPolicy("AllowLocalhostFrontend", policy =>
-	{
-		policy.AllowAnyHeader()
-					.AllowAnyMethod()
-					.SetIsOriginAllowed(origin => string.IsNullOrEmpty(origin) || allowedOrigins.Contains(origin));
-	});
+  options.AddPolicy("AllowLocalhostFrontend", policy =>
+  {
+    policy.AllowAnyHeader()
+                  .AllowAnyMethod()
+                  .SetIsOriginAllowed(origin => string.IsNullOrEmpty(origin) || allowedOrigins.Contains(origin));
+  });
 });
 
 
@@ -29,7 +29,7 @@ app.UseCors("AllowLocalhostFrontend");
 
 if (app.Environment.IsDevelopment())
 {
-	app.MapOpenApi();
+  app.MapOpenApi();
 }
 
 app.UseHttpsRedirection();

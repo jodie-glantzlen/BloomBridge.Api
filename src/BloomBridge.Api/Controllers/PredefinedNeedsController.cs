@@ -6,23 +6,23 @@ using Microsoft.EntityFrameworkCore;
 [Route("api/[controller]")]
 public class PredefinedNeedsController : ControllerBase
 {
-	private readonly AppDbContext _db;
+  private readonly AppDbContext _db;
 
-	public PredefinedNeedsController(AppDbContext db)
-	{
-		_db = db;
-	}
+  public PredefinedNeedsController(AppDbContext db)
+  {
+    _db = db;
+  }
 
-	[HttpGet]
-	public async Task<ActionResult<IEnumerable<PredefinedNeedResponseDto>>> GetAllPredefinedNeeds()
-	{
-		var needs = await _db.PredefinedNeeds
-		.Select(n => new PredefinedNeedResponseDto
-		{
-			Id = n.Id,
-			Label = n.Label
-		})
-		.ToListAsync();
-		return Ok(needs);
-	}
+  [HttpGet]
+  public async Task<ActionResult<IEnumerable<PredefinedNeedResponseDto>>> GetAllPredefinedNeeds()
+  {
+    var needs = await _db.PredefinedNeeds
+    .Select(n => new PredefinedNeedResponseDto
+    {
+      Id = n.Id,
+      Label = n.Label
+    })
+    .ToListAsync();
+    return Ok(needs);
+  }
 }
